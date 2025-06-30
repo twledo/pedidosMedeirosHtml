@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Pizzaria</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: #dc143c;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            background-color: #dc143c;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: #dc143c;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .btn-primary {
+            background-color: #dc143c;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #dc143c;
+            color: white;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .status-badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-preparing {
+            background-color: #ffeaa7;
+            color: #d63031;
+        }
+
+        .status-ready {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-delivered {
+            background-color: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>Painel Administrativo</h1>
+        <button class="logout-btn" onclick="logout()">Sair</button>
+    </div>
+
+    <!-- Container Principal -->
+    <div class="container">
+        <!-- Mensagem de feedback -->
+        <div id="message" class="message"></div>
+
+        <!-- Loading -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Carregando...</p>
+        </div>
+
+        <!-- Navegação de Abas -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('orders')">📋 Pedidos</button>
+            <button class="tab-btn" onclick="showTab('flavors')">🍕 Sabores</button>
+            <button class="tab-btn" onclick="showTab('sizes')">📏 Tamanhos</button>
+            <button class="tab-btn" onclick="showTab('borders')">🥪 Bordas</button>
+            <button class="tab-btn" onclick="showTab('drinks')">🥤 Bebidas</button>
+        </div>
+
+        <!-- Aba de Pedidos -->
+        <div id="orders" class="tab-content active">
+            <div class="section-card">
+                <h2 class="section-title">📋 Gerenciar Pedidos</h2>
+
+                <div class="table-container">
+                    <table id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Data</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados serão carregados via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aba de Sabores -->
+        <div id="flavors" class="tab-content">
+            <div class="section-card">
+                <h2 class="section-title">🍕 Gerenciar Sabores</h2>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="flavorName">Nome do Sabor</label>
+                        <input type="text" id="flavorName" placeholder="Ex: Margherita">
+                    </div>
+                    <div class="form-group">
+                        <label for="flavorDescription">Descrição</label>
+                        <textarea id="flavorDescription" placeholder="Descrição dos ingredientes..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="flavorType">Tipo</label>
+                        <select id="flavorType">
+                            <option value="">Selecione</option>
+                            <option value="SALGADO">Salgada</option>
+                            <option value="DOCE">Doce</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="saveFlavor()">Salvar Sabor</button>
+                <button class="btn btn-secondary" onclick="clearFlavorForm()">Limpar</button>
+
+                <div class="table-container">
+                    <table id="flavorsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Descrição</th>
+                                <th>Tipo</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados serão carregados via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aba de Tamanhos -->
+        <div id="sizes" class="tab-content">
+            <div class="section-card">
+                <h2 class="section-title">📏 Gerenciar Tamanhos</h2>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="sizeName">Nome do Tamanho</label>
+                        <input type="text" id="sizeName" placeholder="Ex: Grande">
+                    </div>
+                    <div class="form-group">
+                        <label for="sizeDescription">Descrição</label>
+                        <input type="text" id="sizeDescription" placeholder="Ex: 35cm">
+                    </div>
+                    <div class="form-group">
+                        <label for="sizePieces">Quantidade de Pedaços</label>
+                        <input type="number" id="sizePieces" placeholder="8">
+                    </div>
+                    <div class="form-group">
+                        <label for="sizePrice">Preço Base</label>
+                        <input type="number" id="sizePrice" step="0.01" placeholder="25.90">
+                    </div>
+                    <div class="form-group">
+                        <label for="sizeFlavorsQuantity">Sabores Máximos</label>
+                        <input type="number" id="sizeFlavorsQuantity" placeholder="Ex: 3">
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="saveSize()">Salvar Tamanho</button>
+                <button class="btn btn-secondary" onclick="clearSizeForm()">Limpar</button>
+
+                <div class="table-container">
+                    <table id="sizesTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Descrição</th>
+                                <th>Pedaços</th>
+                                <th>Preço</th>
+                                <th>Sabores Máx.</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados serão carregados via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aba de Bordas -->
+        <div id="borders" class="tab-content">
+            <div class="section-card">
+                <h2 class="section-title">🥪 Gerenciar Bordas</h2>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="borderName">Nome da Borda</label>
+                        <input type="text" id="borderName" placeholder="Ex: Borda de chocolate">
+                    </div>
+                    <div class="form-group">
+                        <label for="borderPrice">Preço Adicional</label>
+                        <input type="number" id="borderPrice" step="0.01" placeholder="Ex: 5.00">
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="saveBorder()">Salvar Borda</button>
+                <button class="btn btn-secondary" onclick="clearBorderForm()">Limpar</button>
+
+                <div class="table-container">
+                    <table id="bordersTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Preço</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados serão carregados via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aba de Bebidas -->
+        <div id="drinks" class="tab-content">
+            <div class="section-card">
+                <h2 class="section-title">🥤 Gerenciar Bebidas</h2>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="drinkName">Nome da Bebida</label>
+                        <input type="text" id="drinkName" placeholder="Ex: Coca-Cola 350ml">
+                    </div>
+                    <div class="form-group">
+                        <label for="drinkPrice">Preço</label>
+                        <input type="number" id="drinkPrice" step="0.01" placeholder="4.50">
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="saveDrink()">Salvar Bebida</button>
+                <button class="btn btn-secondary" onclick="clearDrinkForm()">Limpar</button>
+
+                <div class="table-container">
+                    <table id="drinksTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Preço</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados serão carregados via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para edição -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Editar Item</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody">
+                <!-- Conteúdo do modal será inserido dinamicamente -->
+            </div>
+            <div style="margin-top: 20px;">
+                <button class="btn btn-primary" onclick="saveModalData()">Salvar</button>
+                <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base URL da API
+        const API_BASE = 'http://localhost:8080';
+
+        // Token de autenticação
+        let authToken = localStorage.getItem('token');
+
+        // Variáveis globais
+        let currentEditItem = null;
+        let currentEditType = null;
+
+        // Verificar autenticação ao carregar
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!authToken) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            // Carregar dados iniciais
+            loadOrders();
+            loadFlavors();
+            loadSizes();
+            loadBorders();
+            loadDrinks();
+        });
+
+        // Função para mostrar mensagem
+        function showMessage(text, type = 'success') {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type} show`;
+
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+            }, 4000);
+        }
+
+        // Função para mostrar/esconder loading
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            loading.className = show ? 'loading show' : 'loading';
+        }
+
+        // Função para fazer requisições autenticadas
+        async function apiRequest(endpoint, options = {}) {
+            showLoading(true);
+
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': authToken ? `Bearer ${authToken}` : ''
+                },
+                ...options
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, config);
+
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = '/login.html';
+                    return null;
+                }
+
+                // Verificar se a resposta tem conteúdo
+                const text = await response.text();
+
+                if (!response.ok) {
+                    let errorData = null;
+                    try {
+                        errorData = text ? JSON.parse(text) : {};
+                    } catch (e) {
+                        // Se não conseguir fazer parse, usar o texto como mensagem
+                    }
+                    throw new Error(errorData?.message || text || 'Erro na requisição');
+                }
+
+                // Se a resposta está vazia (comum em DELETE), retornar sucesso
+                if (!text) {
+                    return { success: true };
+                }
+
+                // Tentar fazer parse do JSON
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    // Se não conseguir fazer parse, retornar o texto
+                    return { success: true, data: text };
+                }
+
+            } catch (error) {
+                showMessage(error.message, 'error');
+                return null;
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Função para trocar de aba
+        function showTab(tabName) {
+            // Remover classe active de todas as abas
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            // Adicionar classe active na aba selecionada
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Funções de Logout
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/login.html';
+        }
+
+        // === PEDIDOS ===
+        async function loadOrders() {
+            const orders = await apiRequest('/admin/orders');
+            if (orders) {
+                displayOrders(orders);
+            }
+        }
+
+        function displayOrders(orders) {
+            const tbody = document.querySelector('#ordersTable tbody');
+            tbody.innerHTML = '';
+
+            orders.forEach(order => {
+                const statusClass = `status-${order.status.toLowerCase().replace(' ', '-')}`;
+                const row = `
+                    <tr>
+                        <td>${order.id}</td>
+                        <td>${order.customerName || 'N/A'}</td>
+                        <td>R$ ${order.total ? order.total.toFixed(2) : '0.00'}</td>
+                        <td><span class="status-badge ${statusClass}">${order.status}</span></td>
+                        <td>${new Date(order.createdAt).toLocaleDateString('pt-BR')}</td>
+                        <td>
+                            <button class="btn btn-primary" onclick="viewOrder(${order.id})">Ver</button>
+                            <button class="btn btn-secondary" onclick="editOrder(${order.id})">Editar</button>
+                            <button class="btn btn-danger" onclick="deleteOrder(${order.id})">Excluir</button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        async function viewOrder(id) {
+            const order = await apiRequest(`/admin/orders/${id}`);
+            if (order) {
+                alert(`Pedido #${id}\nDetalhes: ${JSON.stringify(order, null, 2)}`);
+            }
+        }
+
+        async function editOrder(id) {
+            const order = await apiRequest(`/admin/orders/${id}`);
+            if (order) {
+                currentEditItem = order;
+                currentEditType = 'order';
+
+                document.getElementById('modalTitle').textContent = `Editar Pedido #${id}`;
+                document.getElementById('modalBody').innerHTML = `
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="editOrderStatus">
+                            <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pendente</option>
+                            <option value="preparing" ${order.status === 'preparing' ? 'selected' : ''}>Preparando</option>
+                            <option value="ready" ${order.status === 'ready' ? 'selected' : ''}>Pronto</option>
+                            <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Entregue</option>
+                        </select>
+                    </div>
+                `;
+
+                document.getElementById('editModal').classList.add('show');
+            }
+        }
+
+        async function deleteOrder(id) {
+            if (confirm('Tem certeza que deseja excluir este pedido?')) {
+                const result = await apiRequest(`/admin/orders/${id}`, { method: 'DELETE' });
+                if (result) {
+                    showMessage('Pedido excluído com sucesso!');
+                    loadOrders();
+                }
+            }
+        }
+
+        // === SABORES ===
+        async function loadFlavors() {
+            const flavors = await apiRequest('/admin/flavors');
+            if (flavors) {
+                displayFlavors(flavors);
+            }
+        }
+
+        function displayFlavors(flavors) {
+            const tbody = document.querySelector('#flavorsTable tbody');
+            tbody.innerHTML = '';
+
+            flavors.forEach(flavor => {
+                const row = `
+                    <tr>
+                        <td>${flavor.id}</td>
+                        <td>${flavor.name}</td>
+                        <td>${flavor.description || 'N/A'}</td>
+                        <td>${flavor.type === 'DOCE' ? 'Doce' : 'Salgada'}</td>
+                        <td>
+                            <button class="btn btn-secondary" onclick="editFlavor(${flavor.id})">Editar</button>
+                            <button class="btn btn-danger" onclick="deleteFlavor(${flavor.id})">Excluir</button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        async function saveFlavor() {
+            const name = document.getElementById('flavorName').value;
+            const description = document.getElementById('flavorDescription').value;
+            const type = document.getElementById('flavorType').value;
+
+            if (!name || !type) {
+                showMessage('Nome e tipo são obrigatórios!', 'error');
+                return;
+            }
+
+            const data = { name, description, type };
+            const result = await apiRequest('/admin/flavors', {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+
+            if (result) {
+                showMessage('Sabor salvo com sucesso!');
+                clearFlavorForm();
+                loadFlavors();
+            }
+        }
+
+        function clearFlavorForm() {
+            document.getElementById('flavorName').value = '';
+            document.getElementById('flavorDescription').value = '';
+            document.getElementById('flavorType').value = '';
+        }
+
+        async function editFlavor(id) {
+            const flavor = await apiRequest(`/admin/flavors/${id}`);
+            if (flavor) {
+                currentEditItem = flavor;
+                currentEditType = 'flavor';
+
+                document.getElementById('modalTitle').textContent = `Editar Sabor #${id}`;
+                document.getElementById('modalBody').innerHTML = `
+                    <div class="form-group">
+                        <label for="editFlavorName">Nome do Sabor</label>
+                        <input type="text" id="editFlavorName" value="${flavor.name}" placeholder="Ex: Margherita">
+                    </div>
+                    <div class="form-group">
+                        <label for="editFlavorDescription">Descrição</label>
+                        <textarea id="editFlavorDescription" placeholder="Descrição dos ingredientes...">${flavor.description || ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editFlavorType">Tipo</label>
+                        <select id="editFlavorType">
+                            <option value="SALGADO" ${flavor.type === 'SALGADO' ? 'selected' : ''}>Salgada</option>
+                            <option value="DOCE" ${flavor.type === 'DOCE' ? 'selected' : ''}>Doce</option>
+                        </select>
+                    </div>
+                `;
+
+                document.getElementById('editModal').classList.add('show');
+            }
+        }
+
+        async function deleteFlavor(id) {
+            if (confirm('Tem certeza que deseja excluir este sabor?')) {
+                const result = await apiRequest(`/admin/flavors/${id}`, { method: 'DELETE' });
+                if (result) {
+                    showMessage('Sabor excluído com sucesso!');
+                    loadFlavors();
+                }
+            }
+        }
+
+        // === TAMANHOS ===
+        async function loadSizes() {
+            const sizes = await apiRequest('/admin/sizes');
+            if (sizes) {
+                displaySizes(sizes);
+            }
+        }
+
+        function displaySizes(sizes) {
+            const tbody = document.querySelector('#sizesTable tbody');
+            tbody.innerHTML = '';
+
+            sizes.forEach(size => {
+                const row = `
+                    <tr>
+                        <td>${size.id}</td>
+                        <td>${size.name}</td>
+                        <td>${size.description || 'N/A'}</td>
+                        <td>${size.pieces || 'N/A'}</td>
+                        <td>R$ ${size.price ? (size.price / 100).toFixed(2).replace('.', ',') : '0,00'}</td>
+                        <td>${size.flavorsQuantity ?? size.flavors_quantity ?? 'N/A'}</td>
+                        <td>
+                            <button class="btn btn-secondary" onclick="editSize(${size.id})">Editar</button>
+                            <button class="btn btn-danger" onclick="deleteSize(${size.id})">Excluir</button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        async function saveSize() {
+            const name = document.getElementById('sizeName').value;
+            const description = document.getElementById('sizeDescription').value;
+            const pieces = parseInt(document.getElementById('sizePieces').value);
+            const priceValue = document.getElementById('sizePrice').value.replace(',', '.');
+            const price = Math.round(parseFloat(priceValue) * 100);
+            const flavorsQuantity = parseInt(document.getElementById('sizeFlavorsQuantity').value);
+
+            if (!name || !pieces || !price || !flavorsQuantity) {
+                showMessage('Todos os campos são obrigatórios!', 'error');
+                return;
+            }
+
+            const data = { name, description, pieces, price, flavorsQuantity };
+            const result = await apiRequest('/admin/sizes', {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+
+            if (result) {
+                showMessage('Tamanho salvo com sucesso!');
+                clearSizeForm();
+                loadSizes();
+            }
+        }
+
+        function clearSizeForm() {
+            document.getElementById('sizeName').value = '';
+            document.getElementById('sizeDescription').value = '';
+            document.getElementById('sizePieces').value = '';
+            document.getElementById('sizePrice').value = '';
+            document.getElementById('sizeFlavorsQuantity').value = '';
+        }
+
+        async function editSize(id) {
+            const size = await apiRequest(`/admin/sizes/${id}`);
+            if (size) {
+                currentEditItem = size;
+                currentEditType = 'size';
+
+                document.getElementById('modalTitle').textContent = `Editar Tamanho #${id}`;
+                document.getElementById('modalBody').innerHTML = `
+                    <div class="form-group">
+                        <label for="editSizeName">Nome do Tamanho</label>
+                        <input type="text" id="editSizeName" value="${size.name}" placeholder="Ex: Grande">
+                    </div>
+                    <div class="form-group">
+                        <label for="editSizeDescription">Descrição</label>
+                        <input type="text" id="editSizeDescription" value="${size.description || ''}" placeholder="Ex: 35cm">
+                    </div>
+                    <div class="form-group">
+                        <label for="editSizePieces">Quantidade de Pedaços</label>
+                        <input type="number" id="editSizePieces" value="${size.pieces || ''}" placeholder="Ex: 8">
+                    </div>
+                    <div class="form-group">
+                        <label for="editSizePrice">Preço Base</label>
+                        <input type="number" id="editSizePrice" step="0.01" value="${size.price ? (size.price / 100).toFixed(2).replace('.', ',') : ''}" placeholder="Ex: 25,90">
+                    </div>
+                    <div class="form-group">
+                        <label for="editSizeFlavorsQuantity">Sabores Máximos</label>
+                        <input type="number" id="editSizeFlavorsQuantity" value="${size.flavorsQuantity || ''}" placeholder="Ex: 3">
+                    </div>
+                `;
+
+                document.getElementById('editModal').classList.add('show');
+            }
+        }
+
+        async function deleteSize(id) {
+            if (confirm('Tem certeza que deseja excluir este tamanho?')) {
+                const result = await apiRequest(`/admin/sizes/${id}`, { method: 'DELETE' });
+                if (result) {
+                    showMessage('Tamanho excluído com sucesso!');
+                    loadSizes();
+                }
+            }
+        }
+
+        // === BORDAS ===
+        async function loadBorders() {
+            const borders = await apiRequest('/admin/borders');
+            if (borders) {
+                displayBorders(borders);
+            }
+        }
+
+        function displayBorders(borders) {
+            const tbody = document.querySelector('#bordersTable tbody');
+            tbody.innerHTML = '';
+
+            borders.forEach(border => {
+                const row = `
+                    <tr>
+                        <td>${border.id}</td>
+                        <td>${border.name}</td>
+                        <td>R$ ${border.price ? border.price.toFixed(2) : '0.00'}</td>
+                        <td>
+                            <button class="btn btn-secondary" onclick="editBorder(${border.id})">Editar</button>
+                            <button class="btn btn-danger" onclick="deleteBorder(${border.id})">Excluir</button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        async function saveBorder() {
+            const name = document.getElementById('borderName').value;
+            const price = parseFloat(document.getElementById('borderPrice').value);
+
+            if (!name || !price) {
+                showMessage('Nome e preço são obrigatórios!', 'error');
+                return;
+            }
+
+            const data = { name, price };
+            const result = await apiRequest('/admin/borders', {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+
+            if (result) {
+                showMessage('Borda salva com sucesso!');
+                clearBorderForm();
+                loadBorders();
+            }
+        }
+
+        function clearBorderForm() {
+            document.getElementById('borderName').value = '';
+            document.getElementById('borderPrice').value = '';
+        }
+
+        async function editBorder(id) {
+            const border = await apiRequest(`/admin/borders/${id}`);
+            if (border) {
+                currentEditItem = border;
+                currentEditType = 'border';
+
+                document.getElementById('modalTitle').textContent = `Editar Borda #${id}`;
+                document.getElementById('modalBody').innerHTML = `
+                    <div class="form-group">
+                        <label for="editBorderName">Nome da Borda</label>
+                        <input type="text" id="editBorderName" value="${border.name}" placeholder="Borda de chocolate">
+                    </div>
+                    <div class="form-group">
+                        <label for="editBorderPrice">Preço Adicional</label>
+                        <input type="number" id="editBorderPrice" step="0.01" value="${border.price || ''}" placeholder="5.00">
+                    </div>
+                `;
+
+                document.getElementById('editModal').classList.add('show');
+            }
+        }
+
+        async function deleteBorder(id) {
+            if (confirm('Tem certeza que deseja excluir esta borda?')) {
+                const result = await apiRequest(`/admin/borders/${id}`, { method: 'DELETE' });
+                if (result) {
+                    showMessage('Borda excluída com sucesso!');
+                    loadBorders();
+                }
+            }
+        }
+
+        // === BEBIDAS ===
+        async function loadDrinks() {
+            const drinks = await apiRequest('/admin/drinks');
+            if (drinks) {
+                displayDrinks(drinks);
+            }
+        }
+
+        function displayDrinks(drinks) {
+            const tbody = document.querySelector('#drinksTable tbody');
+            tbody.innerHTML = '';
+
+            drinks.forEach(drink => {
+                const row = `
+                    <tr>
+                        <td>${drink.id}</td>
+                        <td>${drink.name}</td>
+                        <td>R$ ${drink.price ? drink.price.toFixed(2) : '0.00'}</td>
+                        <td>
+                            <button class="btn btn-secondary" onclick="editDrink(${drink.id})">Editar</button>
+                            <button class="btn btn-danger" onclick="deleteDrink(${drink.id})">Excluir</button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        async function saveDrink() {
+            const name = document.getElementById('drinkName').value;
+            const price = parseFloat(document.getElementById('drinkPrice').value);
+
+            if (!name || !price) {
+                showMessage('Nome e preço são obrigatórios!', 'error');
+                return;
+            }
+
+            const data = { name, price };
+            const result = await apiRequest('/admin/drinks', {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+
+            if (result) {
+                showMessage('Bebida salva com sucesso!');
+                clearDrinkForm();
+                loadDrinks();
+            }
+        }
+
+        function clearDrinkForm() {
+            document.getElementById('drinkName').value = '';
+            document.getElementById('drinkPrice').value = '';
+        }
+
+        async function editDrink(id) {
+            const drink = await apiRequest(`/admin/drinks/${id}`);
+            if (drink) {
+                currentEditItem = drink;
+                currentEditType = 'drink';
+
+                document.getElementById('modalTitle').textContent = `Editar Bebida #${id}`;
+                document.getElementById('modalBody').innerHTML = `
+                    <div class="form-group">
+                        <label for="editDrinkName">Nome da Bebida</label>
+                        <input type="text" id="editDrinkName" value="${drink.name}" placeholder="Ex: Coca-Cola 350ml">
+                    </div>
+                    <div class="form-group">
+                        <label for="editDrinkPrice">Preço</label>
+                        <input type="number" id="editDrinkPrice" step="0.01" value="${drink.price || ''}" placeholder="Ex: 4.50">
+                    </div>
+                `;
+
+                document.getElementById('editModal').classList.add('show');
+            }
+        }
+
+        async function deleteDrink(id) {
+            if (confirm('Tem certeza que deseja excluir esta bebida?')) {
+                const result = await apiRequest(`/admin/drinks/${id}`, { method: 'DELETE' });
+                if (result) {
+                    showMessage('Bebida excluída com sucesso!');
+                    loadDrinks();
+                }
+            }
+        }
+
+        // === MODAL ===
+        function closeModal() {
+            document.getElementById('editModal').classList.remove('show');
+            currentEditItem = null;
+            currentEditType = null;
+        }
+
+        async function saveModalData() {
+            if (currentEditType === 'order' && currentEditItem) {
+                const status = document.getElementById('editOrderStatus').value;
+
+                const result = await apiRequest(`/admin/orders/${currentEditItem.id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ status })
+                });
+
+                if (result) {
+                    showMessage('Pedido atualizado com sucesso!');
+                    closeModal();
+                    loadOrders();
+                }
+            } else if (currentEditType === 'flavor' && currentEditItem) {
+                const name = document.getElementById('editFlavorName').value;
+                const description = document.getElementById('editFlavorDescription').value;
+                const type = document.getElementById('editFlavorType').value;
+
+                if (!name || !type) {
+                    showMessage('Nome e tipo são obrigatórios!', 'error');
+                    return;
+                }
+
+                const data = { name, description, type };
+                const result = await apiRequest(`/admin/flavors/${currentEditItem.id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(data)
+                });
+
+                if (result) {
+                    showMessage('Sabor atualizado com sucesso!');
+                    closeModal();
+                    loadFlavors();
+                }
+            } else if (currentEditType === 'size' && currentEditItem) {
+                const name = document.getElementById('editSizeName').value;
+                const description = document.getElementById('editSizeDescription').value;
+                const pieces = parseInt(document.getElementById('editSizePieces').value);
+                const priceValue = document.getElementById('editSizePrice').value.replace(',', '.');
+                const price = Math.round(parseFloat(priceValue) * 100);
+                const flavorsQuantity = parseInt(document.getElementById('editSizeFlavorsQuantity').value);
+
+                if (!name || !pieces || !price || !flavorsQuantity) {
+                    showMessage('Todos os campos são obrigatórios!', 'error');
+                    return;
+                }
+
+                const data = { name, description, pieces, price, flavorsQuantity };
+                const result = await apiRequest(`/admin/sizes/${currentEditItem.id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(data)
+                });
+
+                if (result) {
+                    showMessage('Tamanho atualizado com sucesso!');
+                    closeModal();
+                    loadSizes();
+                }
+            } else if (currentEditType === 'border' && currentEditItem) {
+                const name = document.getElementById('editBorderName').value;
+                const price = parseFloat(document.getElementById('editBorderPrice').value);
+
+                if (!name || !price) {
+                    showMessage('Nome e preço são obrigatórios!', 'error');
+                    return;
+                }
+
+                const data = { name, price };
+                const result = await apiRequest(`/admin/borders/${currentEditItem.id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(data)
+                });
+
+                if (result) {
+                    showMessage('Borda atualizada com sucesso!');
+                    closeModal();
+                    loadBorders();
+                }
+            } else if (currentEditType === 'drink' && currentEditItem) {
+                const name = document.getElementById('editDrinkName').value;
+                const price = parseFloat(document.getElementById('editDrinkPrice').value);
+
+                if (!name || !price) {
+                    showMessage('Nome e preço são obrigatórios!', 'error');
+                    return;
+                }
+
+                const data = { name, price };
+                const result = await apiRequest(`/admin/drinks/${currentEditItem.id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(data)
+                });
+
+                if (result) {
+                    showMessage('Bebida atualizada com sucesso!');
+                    closeModal();
+                    loadDrinks();
+                }
+            }
+        }
+
+        // Fechar modal ao clicar fora
+        document.getElementById('editModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+
+</html>
