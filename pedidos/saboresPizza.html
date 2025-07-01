@@ -61,6 +61,14 @@
             margin-bottom: 24px;
         }
 
+        .categoria-titulo {
+            font-size: 1.09rem;
+            font-weight: bold;
+            margin: 16px 0 8px 0;
+            color: #222;
+            letter-spacing: 1px;
+        }
+
         .option-btn {
             background: #f3f4f6;
             border: 2px solid #d1d5db;
@@ -202,35 +210,74 @@
 
             const maxAtingido = saboresSelecionados.length >= maxSabores;
 
-            saboresFiltrados.forEach(s => {
-                const selecionado = saboresSelecionados.includes(s.id);
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'option-btn' + (selecionado ? ' selected' : '');
-                btn.innerHTML = `
-                    <b>${s.name}</b>
-                    <span class="desc">${s.description ? s.description : ''}</span>
-                `;
-                // Só permite selecionar se não atingiu o máximo ou se já está selecionado
-                const desabilitado = !selecionado && maxAtingido;
-                btn.disabled = desabilitado;
-                btn.style.opacity = desabilitado ? 0.5 : 1;
-                // Remove o cursor pointer dos desabilitados
-                if (desabilitado) {
-                    btn.style.cursor = 'default';
-                } else {
-                    btn.style.cursor = 'pointer';
-                }
-                btn.onclick = () => {
-                    if (selecionado) {
-                        saboresSelecionados = saboresSelecionados.filter(id => id !== s.id);
-                    } else if (saboresSelecionados.length < maxSabores) {
-                        saboresSelecionados.push(s.id);
-                    }
-                    renderSabores();
-                };
-                stepOptions.appendChild(btn);
-            });
+            // Divisão em categorias
+            // Ajuste o campo abaixo (type) conforme o seu backend: ex: type, categoria, flavorType, etc.
+            const saboresSalgados = saboresFiltrados.filter(s => s.type === "SALGADO");
+            const saboresDoces = saboresFiltrados.filter(s => s.type === "DOCE");
+
+            // Render Salgados
+            if (saboresSalgados.length > 0) {
+                const salgadosTitulo = document.createElement('div');
+                salgadosTitulo.className = "categoria-titulo";
+                salgadosTitulo.textContent = "Pizzas salgadas";
+                stepOptions.appendChild(salgadosTitulo);
+
+                saboresSalgados.forEach(s => {
+                    const selecionado = saboresSelecionados.includes(s.id);
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'option-btn' + (selecionado ? ' selected' : '');
+                    btn.innerHTML = `
+                        <b>${s.name}</b>
+                        <span class="desc">${s.description ? s.description : ''}</span>
+                    `;
+                    const desabilitado = !selecionado && maxAtingido;
+                    btn.disabled = desabilitado;
+                    btn.style.opacity = desabilitado ? 0.5 : 1;
+                    btn.style.cursor = desabilitado ? 'default' : 'pointer';
+                    btn.onclick = () => {
+                        if (selecionado) {
+                            saboresSelecionados = saboresSelecionados.filter(id => id !== s.id);
+                        } else if (saboresSelecionados.length < maxSabores) {
+                            saboresSelecionados.push(s.id);
+                        }
+                        renderSabores();
+                    };
+                    stepOptions.appendChild(btn);
+                });
+            }
+
+            // Render Doces
+            if (saboresDoces.length > 0) {
+                const docesTitulo = document.createElement('div');
+                docesTitulo.className = "categoria-titulo";
+                docesTitulo.textContent = "Pizzas doces";
+                stepOptions.appendChild(docesTitulo);
+
+                saboresDoces.forEach(s => {
+                    const selecionado = saboresSelecionados.includes(s.id);
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'option-btn' + (selecionado ? ' selected' : '');
+                    btn.innerHTML = `
+                        <b>${s.name}</b>
+                        <span class="desc">${s.description ? s.description : ''}</span>
+                    `;
+                    const desabilitado = !selecionado && maxAtingido;
+                    btn.disabled = desabilitado;
+                    btn.style.opacity = desabilitado ? 0.5 : 1;
+                    btn.style.cursor = desabilitado ? 'default' : 'pointer';
+                    btn.onclick = () => {
+                        if (selecionado) {
+                            saboresSelecionados = saboresSelecionados.filter(id => id !== s.id);
+                        } else if (saboresSelecionados.length < maxSabores) {
+                            saboresSelecionados.push(s.id);
+                        }
+                        renderSabores();
+                    };
+                    stepOptions.appendChild(btn);
+                });
+            }
 
             // Mensagem de instrução
             msg.style.display = 'block';

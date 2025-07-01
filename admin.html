@@ -317,7 +317,7 @@
                         <textarea id="flavorDescription" placeholder="Descrição dos ingredientes..."></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="flavorType">Tipo</label>
+                        <label for="flavorType">Sabor</label>
                         <select id="flavorType">
                             <option value="">Selecione</option>
                             <option value="SALGADO">Salgada</option>
@@ -336,7 +336,7 @@
                                 <th>ID</th>
                                 <th>Nome</th>
                                 <th>Descrição</th>
-                                <th>Tipo</th>
+                                <th>Sabor</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -714,7 +714,7 @@
             const type = document.getElementById('flavorType').value;
 
             if (!name || !type) {
-                showMessage('Nome e tipo são obrigatórios!', 'error');
+                showMessage('Nome e sabor são obrigatórios!', 'error');
                 return;
             }
 
@@ -754,7 +754,7 @@
                         <textarea id="editFlavorDescription" placeholder="Descrição dos ingredientes...">${flavor.description || ''}</textarea>
                     </div>
                     <div class="form-group">
-                        <label for="editFlavorType">Tipo</label>
+                        <label for="editFlavorType">Sabor</label>
                         <select id="editFlavorType">
                             <option value="SALGADO" ${flavor.type === 'SALGADO' ? 'selected' : ''}>Salgada</option>
                             <option value="DOCE" ${flavor.type === 'DOCE' ? 'selected' : ''}>Doce</option>
@@ -1086,7 +1086,7 @@
                 const type = document.getElementById('editFlavorType').value;
 
                 if (!name || !type) {
-                    showMessage('Nome e tipo são obrigatórios!', 'error');
+                    showMessage('Nome e sabor são obrigatórios!', 'error');
                     return;
                 }
 
