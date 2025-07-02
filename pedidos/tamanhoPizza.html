@@ -4,84 +4,31 @@
 <head>
   <meta charset="UTF-8">
   <title>Escolha o Tamanho da Pizza</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {
-      background: #f8fafc;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-
-    .step-container {
-      max-width: 400px;
-      margin: 40px auto;
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 4px 24px #0002;
-      padding: 32px 28px 24px 28px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 320px;
-    }
-
-    .step-title {
-      font-size: 1.5rem;
-      color: #d72638;
-      margin-bottom: 24px;
-      text-align: center;
-    }
-
-    .step-options {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      margin-bottom: 24px;
-    }
-
-    .option-btn {
-      background: #f3f4f6;
-      border: 2px solid #d1d5db;
-      border-radius: 8px;
-      padding: 16px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: background 0.2s, border 0.2s;
-      text-align: left;
-      color: #222;
-      display: block;
-    }
-
-    .option-btn.selected,
-    .option-btn:hover {
-      background: #d72638;
-      color: #fff;
-      border-color: #d72638;
-    }
-
-    .msg {
-      margin-top: 18px;
-      color: #d72638;
-      font-size: 1rem;
-      text-align: center;
-    }
-
-    .desc {
-      color: #555;
-      font-size: 0.98rem;
-      margin: 6px 0 0 0;
-      display: block;
-    }
+    /* Todas as animações removidas */
   </style>
 </head>
 
-<body>
-  <div class="step-container" id="stepContainer">
-    <div class="step-title" id="stepTitle">Escolha o tamanho da pizza</div>
-    <div class="step-options" id="stepOptions"></div>
-    <div class="msg" id="msg" style="display:none"></div>
+<body class="bg-neutral-950 min-h-screen flex flex-col items-center justify-center text-white">
+  <div class="w-full max-w-md mx-auto mt-8 mb-28 px-2">
+    <div id="mainContainer" class="bg-neutral-900 rounded-2xl shadow-xl p-6 flex flex-col items-center">
+      <h1 class="text-2xl md:text-3xl font-bold text-yellow-400 mb-6 text-center drop-shadow">Escolha o tamanho da
+        pizza
+      </h1>
+      <div id="stepOptions" class="w-full flex flex-col gap-4"></div>
+      <div id="msg" class="w-full text-center text-red-500 font-semibold mt-4 hidden"></div>
+    </div>
   </div>
+      <button id="avancarBtn" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md
+        bg-yellow-500 text-neutral-900 font-bold py-4 rounded-t-2xl text-xl shadow-xl
+        transition-colors z-50
+        hover:bg-yellow-500 hover:text-neutral-900
+        disabled:bg-neutral-700 disabled:text-neutral-400" disabled>
+    Avançar
+  </button>
   <script>
     let tamanhos = [];
     let tamanhoSelecionado = null;
@@ -92,41 +39,70 @@
         tamanhos = await resp.json();
         renderTamanhos();
       } catch (e) {
-        document.getElementById('msg').style.display = 'block';
+        document.getElementById('msg').classList.remove('hidden');
         document.getElementById('msg').textContent = 'Erro ao buscar tamanhos do servidor.';
       }
     }
 
+    window.addEventListener('DOMContentLoaded', () => {
+      // Nenhuma animação ao abrir
+      const main = document.getElementById('mainContainer');
+      main.style.opacity = 1;
+    });
+
     function renderTamanhos() {
       const stepOptions = document.getElementById('stepOptions');
       const msg = document.getElementById('msg');
-      msg.style.display = 'none';
+      const avancarBtn = document.getElementById('avancarBtn');
+      msg.classList.add('hidden');
       stepOptions.innerHTML = '';
       tamanhos.forEach(t => {
+        const selected = tamanhoSelecionado && tamanhoSelecionado.id === t.id;
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'option-btn' + (tamanhoSelecionado && tamanhoSelecionado.id === t.id ? ' selected' : '');
+        btn.className =
+          `w-full text-left rounded-xl px-5 py-4 border-2 flex flex-col gap-1 shadow-md transition-all
+          ${selected
+            ? 'border-yellow-400 bg-yellow-400/90 text-neutral-900 font-bold scale-105'
+            : 'bg-neutral-800 border-neutral-700 text-white hover:border-yellow-400 hover:bg-neutral-800'}
+        `;
         btn.innerHTML = `
-          <b>${t.name}</b> <span style="float:right">${t.pieces} pedaços</span><br>
-          <span class="desc">${t.description ? t.description : ''}</span>
-          <small>Máx. sabores: ${t.flavorsQuantity ?? t.flavors_quantity ?? 1}</small>
+          <div class="flex items-center justify-between w-full">
+            <span class="font-bold text-base ${selected ? 'text-neutral-900' : 'text-white'}">${t.name}</span>
+            <span class="font-extrabold text-xl md:text-1xl ${selected ? 'text-neutral-900' : 'text-yellow-400'} drop-shadow-lg">
+              R$ ${t.price !== undefined && t.price !== null
+            ? (t.price / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            : '--'}
+            </span>
+          </div>
+          <div class="flex items-center justify-between w-full text-sm mt-1">
+            <span class="${selected ? 'text-neutral-900' : 'text-neutral-300'}">${t.description ? t.description : ''}</span>
+            <span class="${selected ? 'text-neutral-900' : 'text-neutral-400'}">${t.pieces} pedaços</span>
+          </div>
+          <div class="flex justify-between items-center mt-2">
+            <small class="${selected ? 'text-neutral-900' : 'text-yellow-400'} font-semibold">Máx. sabores: ${t.flavorsQuantity ?? t.flavors_quantity ?? 1}</small>
+            ${selected ? '<span class="ml-2 text-neutral-900 text-xs font-bold">Selecionado</span>' : ''}
+          </div>
         `;
         btn.onclick = () => {
           tamanhoSelecionado = t;
-          // Recupera ou cria o objeto do pedido
-          let pedidoPizza = {};
-          try {
-            pedidoPizza = JSON.parse(localStorage.getItem('pedidoPizza')) || {};
-          } catch { pedidoPizza = {}; }
-          // Atualiza o tamanho
-          pedidoPizza.tamanho = t;
-          localStorage.setItem('pedidoPizza', JSON.stringify(pedidoPizza));
-          console.log('Pedido até agora:', pedidoPizza);
-          window.location.href = 'saboresPizza.html';
+          renderTamanhos();
         };
         stepOptions.appendChild(btn);
       });
+      avancarBtn.disabled = !tamanhoSelecionado;
     }
+
+    document.getElementById('avancarBtn').onclick = () => {
+      if (!tamanhoSelecionado) return;
+      let pedidoPizza = {};
+      try {
+        pedidoPizza = JSON.parse(localStorage.getItem('pedidoPizza')) || {};
+      } catch { pedidoPizza = {}; }
+      pedidoPizza.tamanho = tamanhoSelecionado;
+      localStorage.setItem('pedidoPizza', JSON.stringify(pedidoPizza));
+      window.location.href = 'saboresPizza.html';
+    };
 
     fetchTamanhos();
   </script>
