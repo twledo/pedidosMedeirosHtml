@@ -5,512 +5,323 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Pizzaria</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-            min-height: 100vh;
-        }
-
-        .header {
-            background-color: #dc143c;
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            background-color: #333;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .tab-btn.active {
-            background-color: #dc143c;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .section-card {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .section-title {
-            color: #dc143c;
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .btn {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 5px;
-            margin-bottom: 5px;
-        }
-
-        .btn-primary {
-            background-color: #dc143c;
-            color: white;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-        }
-
-        .btn-danger {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        .table-container {
-            overflow-x: auto;
-            margin-top: 15px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: white;
-        }
-
-        th,
-        td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #dc143c;
-            color: white;
-        }
-
-        .message {
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            display: none;
-        }
-
-        .message.show {
-            display: block;
-        }
-
-        .message.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .message.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .loading.show {
-            display: block;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-        }
-
-        .modal.show {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            max-width: 500px;
-            width: 90%;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .status-badge {
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .status-pending {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-
-        .status-preparing {
-            background-color: #ffeaa7;
-            color: #d63031;
-        }
-
-        .status-ready {
-            background-color: #d1ecf1;
-            color: #0c5460;
-        }
-
-        .status-delivered {
-            background-color: #d4edda;
-            color: #155724;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body class="bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800 min-h-screen text-white">
     <!-- Header -->
-    <div class="header">
-        <h1>Painel Administrativo</h1>
-        <button class="logout-btn" onclick="logout()">Sair</button>
-    </div>
+    <header
+        class="fixed top-0 left-0 w-full z-40 bg-red-700/80 backdrop-blur-md shadow-lg flex justify-between items-center px-8 py-4">
+        <h1 class="text-2xl md:text-3xl font-extrabold tracking-wide drop-shadow">Painel Administrativo</h1>
+        <button
+            class="bg-yellow-400 text-neutral-900 font-bold px-5 py-2 rounded-xl shadow-lg hover:bg-yellow-300 hover:scale-105 transition-all"
+            onclick="logout()">Sair</button>
+    </header>
 
-    <!-- Container Principal -->
-    <div class="container">
-        <!-- Mensagem de feedback -->
-        <div id="message" class="message"></div>
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto px-3 py-8 pt-28">
+        <!-- Feedback Message -->
+        <div id="message" class="hidden mb-5 px-4 py-3 rounded-xl font-semibold text-center shadow-lg"></div>
 
         <!-- Loading -->
-        <div id="loading" class="loading">
-            <div class="spinner"></div>
-            <p>Carregando...</p>
+        <div id="loading" class="hidden text-center py-10">
+            <svg class="animate-spin h-8 w-8 text-yellow-400 mx-auto mb-2" xmlns="http://www.w3.org/2000/svg"
+                fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <p class="text-yellow-300">Carregando...</p>
         </div>
 
-        <!-- Navegação de Abas -->
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('orders')">📋 Pedidos</button>
-            <button class="tab-btn" onclick="showTab('flavors')">🍕 Sabores</button>
-            <button class="tab-btn" onclick="showTab('sizes')">📏 Tamanhos</button>
-            <button class="tab-btn" onclick="showTab('borders')">🥪 Bordas</button>
-            <button class="tab-btn" onclick="showTab('drinks')">🥤 Bebidas</button>
-        </div>
+        <!-- Tabs Navigation -->
+        <nav class="flex flex-wrap gap-2 mb-8">
+            <button
+                class="tab-btn bg-neutral-900/80 py-2 px-5 rounded-xl font-bold text-white shadow hover:bg-yellow-400 hover:text-neutral-900 transition-all focus:outline-none focus:ring-2 focus:ring-yellow-400 active"
+                onclick="showTab('orders', event)">📋 Pedidos</button>
+            <button
+                class="tab-btn bg-neutral-900/80 py-2 px-5 rounded-xl font-bold text-white shadow hover:bg-yellow-400 hover:text-neutral-900 transition-all focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                onclick="showTab('flavors', event)">🍕 Sabores</button>
+            <button
+                class="tab-btn bg-neutral-900/80 py-2 px-5 rounded-xl font-bold text-white shadow hover:bg-yellow-400 hover:text-neutral-900 transition-all focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                onclick="showTab('sizes', event)">📏 Tamanhos</button>
+            <button
+                class="tab-btn bg-neutral-900/80 py-2 px-5 rounded-xl font-bold text-white shadow hover:bg-yellow-400 hover:text-neutral-900 transition-all focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                onclick="showTab('borders', event)">🥪 Bordas</button>
+            <button
+                class="tab-btn bg-neutral-900/80 py-2 px-5 rounded-xl font-bold text-white shadow hover:bg-yellow-400 hover:text-neutral-900 transition-all focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                onclick="showTab('drinks', event)">🥤 Bebidas</button>
+        </nav>
 
-        <!-- Aba de Pedidos -->
-        <div id="orders" class="tab-content active">
-            <div class="section-card">
-                <h2 class="section-title">📋 Gerenciar Pedidos</h2>
-
-                <div class="table-container">
-                    <table id="ordersTable">
+        <!-- Tab Contents -->
+        <section id="orders" class="tab-content block">
+            <div class="bg-neutral-900/80 rounded-2xl shadow-2xl p-8 mb-10 border border-neutral-800 backdrop-blur-md">
+                <h2 class="text-2xl text-yellow-400 font-extrabold mb-6 flex items-center gap-2 drop-shadow">📋
+                    Gerenciar Pedidos</h2>
+                <div class="overflow-x-auto rounded-xl">
+                    <table class="w-full text-base bg-neutral-950/80 rounded-xl overflow-hidden shadow">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Cliente</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                                <th>Data</th>
-                                <th>Ações</th>
+                                <th class="p-3 text-yellow-400">ID</th>
+                                <th class="p-3 text-yellow-400">Cliente</th>
+                                <th class="p-3 text-yellow-400">Total</th>
+                                <th class="p-3 text-yellow-400">Status</th>
+                                <th class="p-3 text-yellow-400">Data</th>
+                                <th class="p-3 text-yellow-400">Ações</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- Dados serão carregados via JavaScript -->
+                        <tbody id="ordersTable">
+                            <!-- Dados dinâmicos -->
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Aba de Sabores -->
-        <div id="flavors" class="tab-content">
-            <div class="section-card">
-                <h2 class="section-title">🍕 Gerenciar Sabores</h2>
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="flavorName">Nome do Sabor</label>
-                        <input type="text" id="flavorName" placeholder="Ex: Margherita">
+        <section id="flavors" class="tab-content hidden">
+            <div class="bg-neutral-900/80 rounded-2xl shadow-2xl p-8 mb-10 border border-neutral-800 backdrop-blur-md">
+                <h2 class="text-2xl text-yellow-400 font-extrabold mb-6 flex items-center gap-2 drop-shadow">🍕
+                    Gerenciar Sabores</h2>
+                <form class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
+                    <div>
+                        <label for="flavorName" class="block mb-1 font-bold text-yellow-300">Nome do Sabor</label>
+                        <input type="text" id="flavorName"
+                            class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400"
+                            placeholder="Ex: Margherita">
                     </div>
-                    <div class="form-group">
-                        <label for="flavorDescription">Descrição</label>
-                        <textarea id="flavorDescription" placeholder="Descrição dos ingredientes..."></textarea>
+                    <div>
+                        <label for="flavorDescription" class="block mb-1 font-bold text-yellow-300">Descrição</label>
+                        <textarea id="flavorDescription"
+                            class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400"
+                            placeholder="Descrição dos ingredientes..."></textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="flavorType">Sabor</label>
-                        <select id="flavorType">
+                    <div>
+                        <label for="flavorType" class="block mb-1 font-bold text-yellow-300">Sabor</label>
+                        <select id="flavorType"
+                            class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400">
                             <option value="">Selecione</option>
                             <option value="SALGADO">Salgada</option>
                             <option value="DOCE">Doce</option>
                         </select>
                     </div>
+                </form>
+                <div class="flex gap-2 mb-5">
+                    <button
+                        class="btn btn-primary bg-yellow-400 text-neutral-900 font-bold px-4 py-2 rounded-xl shadow hover:bg-yellow-300 transition-all"
+                        onclick="saveFlavor()">Salvar Sabor</button>
+                    <button
+                        class="btn btn-secondary bg-neutral-700 text-white px-4 py-2 rounded-xl shadow hover:bg-neutral-600 transition-all"
+                        onclick="clearFlavorForm()">Limpar</button>
                 </div>
-
-                <button class="btn btn-primary" onclick="saveFlavor()">Salvar Sabor</button>
-                <button class="btn btn-secondary" onclick="clearFlavorForm()">Limpar</button>
-
-                <div class="table-container">
-                    <table id="flavorsTable">
+                <div class="overflow-x-auto rounded-xl">
+                    <table class="w-full text-base bg-neutral-950/80 rounded-xl overflow-hidden shadow">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Nome</th>
-                                <th>Descrição</th>
-                                <th>Sabor</th>
-                                <th>Ações</th>
+                                <th class="p-3 text-yellow-400">ID</th>
+                                <th class="p-3 text-yellow-400">Nome</th>
+                                <th class="p-3 text-yellow-400">Descrição</th>
+                                <th class="p-3 text-yellow-400">Sabor</th>
+                                <th class="p-3 text-yellow-400">Ações</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- Dados serão carregados via JavaScript -->
+                        <tbody id="flavorsTable">
+                            <!-- Dados dinâmicos -->
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Aba de Tamanhos -->
-        <div id="sizes" class="tab-content">
-            <div class="section-card">
-                <h2 class="section-title">📏 Gerenciar Tamanhos</h2>
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="sizeName">Nome do Tamanho</label>
-                        <input type="text" id="sizeName" placeholder="Ex: Grande">
+        <section id="sizes" class="tab-content hidden">
+            <div class="bg-neutral-900/80 rounded-2xl shadow-2xl p-8 mb-10 border border-neutral-800 backdrop-blur-md">
+                <h2 class="text-2xl text-yellow-400 font-extrabold mb-6 flex items-center gap-2 drop-shadow">📏
+                    Gerenciar Tamanhos</h2>
+                <form class="grid grid-cols-1 md:grid-cols-5 gap-5 mb-5">
+                    <div>
+                        <label for="sizeName" class="block mb-1 font-bold text-yellow-300">Nome do Tamanho</label>
+                        <input type="text" id="sizeName"
+                            class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400"
+                            placeholder="Ex: Grande">
                     </div>
-                    <div class="form-group">
-                        <label for="sizeDescription">Descrição</label>
-                        <input type="text" id="sizeDescription" placeholder="Ex: 35cm">
+                    <div>
+                        <label for="sizeDescription" class="block mb-1 font-bold text-yellow-300">Descrição</label>
+                        <input type="text" id="sizeDescription"
+                            class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400"
+                            placeholder="Ex: 35cm">
                     </div>
-                    <div class="form-group">
-                        <label for="sizePieces">Quantidade de Pedaços</label>
-                        <input type="number" id="sizePieces" placeholder="8">
+                    <div>
+                        <label for="sizePieces" class="block mb-1 font-bold text-yellow-300">Pedaços</label>
+                        <input type="number" id="sizePieces"
+                            class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400"
+                            placeholder="8">
                     </div>
-                    <div class="form-group">
-                        <label for="sizePrice">Preço Base</label>
-                        <input type="number" id="sizePrice" step="0.01" placeholder="25.90">
+                    <div>
+                        <label for="sizePrice" class="block mb-1 font-bold text-yellow-300">Preço Base</label>
+                        <input type="number" id="sizePrice" step="0.01"
+                            class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400"
+                            placeholder="25,90">
                     </div>
-                    <div class="form-group">
-                        <label for="sizeFlavorsQuantity">Sabores Máximos</label>
-                        <input type="number" id="sizeFlavorsQuantity" placeholder="Ex: 3">
+                    <div>
+                        <label for="sizeFlavorsQuantity" class="block mb-1 font-bold text-yellow-300">Sabores
+                            Máximos</label>
+                        <input type="number" id="sizeFlavorsQuantity"
+                            class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400"
+                            placeholder="Ex: 3">
                     </div>
+                </form>
+                <div class="flex gap-2 mb-5">
+                    <button
+                        class="btn btn-primary bg-yellow-400 text-neutral-900 font-bold px-4 py-2 rounded-xl shadow hover:bg-yellow-300 transition-all"
+                        onclick="saveSize()">Salvar Tamanho</button>
+                    <button
+                        class="btn btn-secondary bg-neutral-700 text-white px-4 py-2 rounded-xl shadow hover:bg-neutral-600 transition-all"
+                        onclick="clearSizeForm()">Limpar</button>
                 </div>
-
-                <button class="btn btn-primary" onclick="saveSize()">Salvar Tamanho</button>
-                <button class="btn btn-secondary" onclick="clearSizeForm()">Limpar</button>
-
-                <div class="table-container">
-                    <table id="sizesTable">
+                <div class="overflow-x-auto rounded-xl">
+                    <table class="w-full text-base bg-neutral-950/80 rounded-xl overflow-hidden shadow">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Nome</th>
-                                <th>Descrição</th>
-                                <th>Pedaços</th>
-                                <th>Preço</th>
-                                <th>Sabores Máx.</th>
-                                <th>Ações</th>
+                                <th class="p-3 text-yellow-400">ID</th>
+                                <th class="p-3 text-yellow-400">Nome</th>
+                                <th class="p-3 text-yellow-400">Descrição</th>
+                                <th class="p-3 text-yellow-400">Pedaços</th>
+                                <th class="p-3 text-yellow-400">Preço</th>
+                                <th class="p-3 text-yellow-400">Sabores Máx.</th>
+                                <th class="p-3 text-yellow-400">Ações</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- Dados serão carregados via JavaScript -->
+                        <tbody id="sizesTable">
+                            <!-- Dados dinâmicos -->
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Aba de Bordas -->
-        <div id="borders" class="tab-content">
-            <div class="section-card">
-                <h2 class="section-title">🥪 Gerenciar Bordas</h2>
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="borderName">Nome da Borda</label>
-                        <input type="text" id="borderName" placeholder="Ex: Borda de chocolate">
+        <section id="borders" class="tab-content hidden">
+            <div class="bg-neutral-900/80 rounded-2xl shadow-2xl p-8 mb-10 border border-neutral-800 backdrop-blur-md">
+                <h2 class="text-2xl text-yellow-400 font-extrabold mb-6 flex items-center gap-2 drop-shadow">🥪
+                    Gerenciar Bordas</h2>
+                <form class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                    <div>
+                        <label for="borderName" class="block mb-1 font-bold text-yellow-300">Nome da Borda</label>
+                        <input type="text" id="borderName"
+                            class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400"
+                            placeholder="Ex: Borda de chocolate">
                     </div>
-                    <div class="form-group">
-                        <label for="borderPrice">Preço Adicional</label>
-                        <input type="number" id="borderPrice" step="0.01" placeholder="Ex: 5.00">
+                    <div>
+                        <label for="borderPrice" class="block mb-1 font-bold text-yellow-300">Preço Adicional</label>
+                        <input type="number" id="borderPrice" step="0.01"
+                            class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400"
+                            placeholder="Ex: 5.00">
                     </div>
+                </form>
+                <div class="flex gap-2 mb-5">
+                    <button
+                        class="btn btn-primary bg-yellow-400 text-neutral-900 font-bold px-4 py-2 rounded-xl shadow hover:bg-yellow-300 transition-all"
+                        onclick="saveBorder()">Salvar Borda</button>
+                    <button
+                        class="btn btn-secondary bg-neutral-700 text-white px-4 py-2 rounded-xl shadow hover:bg-neutral-600 transition-all"
+                        onclick="clearBorderForm()">Limpar</button>
                 </div>
-
-                <button class="btn btn-primary" onclick="saveBorder()">Salvar Borda</button>
-                <button class="btn btn-secondary" onclick="clearBorderForm()">Limpar</button>
-
-                <div class="table-container">
-                    <table id="bordersTable">
+                <div class="overflow-x-auto rounded-xl">
+                    <table class="w-full text-base bg-neutral-950/80 rounded-xl overflow-hidden shadow">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Nome</th>
-                                <th>Preço</th>
-                                <th>Ações</th>
+                                <th class="p-3 text-yellow-400">ID</th>
+                                <th class="p-3 text-yellow-400">Nome</th>
+                                <th class="p-3 text-yellow-400">Preço</th>
+                                <th class="p-3 text-yellow-400">Ações</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- Dados serão carregados via JavaScript -->
+                        <tbody id="bordersTable">
+                            <!-- Dados dinâmicos -->
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Aba de Bebidas -->
-        <div id="drinks" class="tab-content">
-            <div class="section-card">
-                <h2 class="section-title">🥤 Gerenciar Bebidas</h2>
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="drinkName">Nome da Bebida</label>
-                        <input type="text" id="drinkName" placeholder="Ex: Coca-Cola 350ml">
+        <section id="drinks" class="tab-content hidden">
+            <div class="bg-neutral-900/80 rounded-2xl shadow-2xl p-8 mb-10 border border-neutral-800 backdrop-blur-md">
+                <h2 class="text-2xl text-yellow-400 font-extrabold mb-6 flex items-center gap-2 drop-shadow">🥤
+                    Gerenciar Bebidas</h2>
+                <form class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                    <div>
+                        <label for="drinkName" class="block mb-1 font-bold text-yellow-300">Nome da Bebida</label>
+                        <input type="text" id="drinkName"
+                            class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400"
+                            placeholder="Ex: Coca-Cola 350ml">
                     </div>
-                    <div class="form-group">
-                        <label for="drinkPrice">Preço</label>
-                        <input type="number" id="drinkPrice" step="0.01" placeholder="4.50">
+                    <div>
+                        <label for="drinkPrice" class="block mb-1 font-bold text-yellow-300">Preço</label>
+                        <input type="number" id="drinkPrice" step="0.01"
+                            class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400"
+                            placeholder="4.50">
                     </div>
+                </form>
+                <div class="flex gap-2 mb-5">
+                    <button
+                        class="btn btn-primary bg-yellow-400 text-neutral-900 font-bold px-4 py-2 rounded-xl shadow hover:bg-yellow-300 transition-all"
+                        onclick="saveDrink()">Salvar Bebida</button>
+                    <button
+                        class="btn btn-secondary bg-neutral-700 text-white px-4 py-2 rounded-xl shadow hover:bg-neutral-600 transition-all"
+                        onclick="clearDrinkForm()">Limpar</button>
                 </div>
-
-                <button class="btn btn-primary" onclick="saveDrink()">Salvar Bebida</button>
-                <button class="btn btn-secondary" onclick="clearDrinkForm()">Limpar</button>
-
-                <div class="table-container">
-                    <table id="drinksTable">
+                <div class="overflow-x-auto rounded-xl">
+                    <table class="w-full text-base bg-neutral-950/80 rounded-xl overflow-hidden shadow">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Nome</th>
-                                <th>Preço</th>
-                                <th>Ações</th>
+                                <th class="p-3 text-yellow-400">ID</th>
+                                <th class="p-3 text-yellow-400">Nome</th>
+                                <th class="p-3 text-yellow-400">Preço</th>
+                                <th class="p-3 text-yellow-400">Ações</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- Dados serão carregados via JavaScript -->
+                        <tbody id="drinksTable">
+                            <!-- Dados dinâmicos -->
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
-    <!-- Modal para edição -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modalTitle">Editar Item</h3>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
+    <!-- Modal -->
+    <div id="editModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm hidden">
+        <div class="bg-neutral-900 rounded-2xl shadow-2xl p-8 max-w-lg w-full border border-yellow-400">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-yellow-400" id="modalTitle">Editar Item</h3>
+                <button class="text-2xl text-yellow-400 hover:text-red-500 transition-all"
+                    onclick="closeModal()">&times;</button>
             </div>
             <div id="modalBody">
                 <!-- Conteúdo do modal será inserido dinamicamente -->
             </div>
-            <div style="margin-top: 20px;">
-                <button class="btn btn-primary" onclick="saveModalData()">Salvar</button>
-                <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+            <div class="mt-6 flex gap-3 justify-end">
+                <button
+                    class="bg-yellow-400 text-neutral-900 font-bold px-4 py-2 rounded-xl shadow hover:bg-yellow-300 hover:scale-105 transition-all"
+                    onclick="saveModalData()">Salvar</button>
+                <button
+                    class="bg-neutral-700 text-white px-4 py-2 rounded-xl shadow hover:bg-neutral-600 transition-all"
+                    onclick="closeModal()">Cancelar</button>
             </div>
         </div>
     </div>
 
+    <!-- Script: igual ao seu script original, mas ajustando a parte do showTab e das mensagens para Tailwind -->
     <script>
         // Base URL da API
         const API_BASE = 'http://localhost:8080';
-
-        // Token de autenticação
         let authToken = localStorage.getItem('token');
-
-        // Variáveis globais
         let currentEditItem = null;
         let currentEditType = null;
 
-        // Verificar autenticação ao carregar
         document.addEventListener('DOMContentLoaded', function () {
             if (!authToken) {
                 window.location.href = '/login.html';
                 return;
             }
-
-            // Carregar dados iniciais
             loadOrders();
             loadFlavors();
             loadSizes();
@@ -518,27 +329,23 @@
             loadDrinks();
         });
 
-        // Função para mostrar mensagem
         function showMessage(text, type = 'success') {
             const messageDiv = document.getElementById('message');
             messageDiv.textContent = text;
-            messageDiv.className = `message ${type} show`;
-
+            messageDiv.className = `mb-5 px-4 py-3 rounded-lg font-semibold text-center ${type === 'success'
+                ? 'bg-green-900 text-green-300 border border-green-700'
+                : 'bg-red-900 text-red-300 border border-red-700'
+                }`;
+            messageDiv.classList.remove('hidden');
             setTimeout(() => {
-                messageDiv.classList.remove('show');
+                messageDiv.classList.add('hidden');
             }, 4000);
         }
-
-        // Função para mostrar/esconder loading
         function showLoading(show) {
-            const loading = document.getElementById('loading');
-            loading.className = show ? 'loading show' : 'loading';
+            document.getElementById('loading').className = show ? 'text-center py-10' : 'hidden';
         }
-
-        // Função para fazer requisições autenticadas
         async function apiRequest(endpoint, options = {}) {
             showLoading(true);
-
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
@@ -546,42 +353,21 @@
                 },
                 ...options
             };
-
             try {
                 const response = await fetch(`${API_BASE}${endpoint}`, config);
-
                 if (response.status === 401) {
                     localStorage.removeItem('token');
                     window.location.href = '/login.html';
                     return null;
                 }
-
-                // Verificar se a resposta tem conteúdo
                 const text = await response.text();
-
                 if (!response.ok) {
                     let errorData = null;
-                    try {
-                        errorData = text ? JSON.parse(text) : {};
-                    } catch (e) {
-                        // Se não conseguir fazer parse, usar o texto como mensagem
-                    }
+                    try { errorData = text ? JSON.parse(text) : {}; } catch (e) { }
                     throw new Error(errorData?.message || text || 'Erro na requisição');
                 }
-
-                // Se a resposta está vazia (comum em DELETE), retornar sucesso
-                if (!text) {
-                    return { success: true };
-                }
-
-                // Tentar fazer parse do JSON
-                try {
-                    return JSON.parse(text);
-                } catch (e) {
-                    // Se não conseguir fazer parse, retornar o texto
-                    return { success: true, data: text };
-                }
-
+                if (!text) return { success: true };
+                try { return JSON.parse(text); } catch (e) { return { success: true, data: text }; }
             } catch (error) {
                 showMessage(error.message, 'error');
                 return null;
@@ -589,74 +375,65 @@
                 showLoading(false);
             }
         }
-
-        // Função para trocar de aba
-        function showTab(tabName) {
-            // Remover classe active de todas as abas
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-            // Adicionar classe active na aba selecionada
-            event.target.classList.add('active');
-            document.getElementById(tabName).classList.add('active');
+        function showTab(tabName, event) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'bg-red-700'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+            if (event) {
+                event.target.classList.add('active', 'bg-red-700');
+            }
+            document.getElementById(tabName).classList.remove('hidden');
         }
-
-        // Funções de Logout
         function logout() {
             localStorage.removeItem('token');
             window.location.href = '/login.html';
         }
 
-        // === PEDIDOS ===
+        // Pedidos
         async function loadOrders() {
             const orders = await apiRequest('/admin/orders');
-            if (orders) {
-                displayOrders(orders);
-            }
+            if (orders) displayOrders(orders);
         }
-
         function displayOrders(orders) {
-            const tbody = document.querySelector('#ordersTable tbody');
+            const tbody = document.getElementById('ordersTable');
             tbody.innerHTML = '';
-
             orders.forEach(order => {
-                const statusClass = `status-${order.status.toLowerCase().replace(' ', '-')}`;
+                const statusCls = {
+                    pending: 'bg-yell text-yellow-700',
+                    preparing: 'bg-yellow-300 text-yellow-900',
+                    ready: 'bg-blue-200 text-blue-800',
+                    delivered: 'bg-green-200 text-green-800'
+                }[order.status] || 'bg-gray-200 text-gray-700';
                 const row = `
-                    <tr>
-                        <td>${order.id}</td>
-                        <td>${order.customerName || 'N/A'}</td>
-                        <td>R$ ${order.total ? order.total.toFixed(2) : '0.00'}</td>
-                        <td><span class="status-badge ${statusClass}">${order.status}</span></td>
-                        <td>${new Date(order.createdAt).toLocaleDateString('pt-BR')}</td>
-                        <td>
-                            <button class="btn btn-primary" onclick="viewOrder(${order.id})">Ver</button>
-                            <button class="btn btn-secondary" onclick="editOrder(${order.id})">Editar</button>
-                            <button class="btn btn-danger" onclick="deleteOrder(${order.id})">Excluir</button>
+                    <tr class="border-b border-neutral-800">
+                        <td class="p-3">${order.id}</td>
+                        <td class="p-3">${order.customerName || 'N/A'}</td>
+                        <td class="p-3">R$ ${order.total ? order.total.toFixed(2) : '0.00'}</td>
+                        <td class="p-3"><span class="px-3 py-1 rounded-xl text-sm font-bold ${statusCls}">${order.status}</span></td>
+                        <td class="p-3">${new Date(order.createdAt).toLocaleDateString('pt-BR')}</td>
+                        <td class="p-3 flex gap-1">
+                            <button class="bg-yellow-400 text-neutral-900 px-2 py-1 rounded font-bold hover:bg-yellow-300" onclick="viewOrder(${order.id})">Ver</button>
+                            <button class="bg-blue-600 text-white px-2 py-1 rounded font-bold hover:bg-blue-500" onclick="editOrder(${order.id})">Editar</button>
+                            <button class="bg-red-600 text-white px-2 py-1 rounded font-bold hover:bg-red-500" onclick="deleteOrder(${order.id})">Excluir</button>
                         </td>
                     </tr>
                 `;
                 tbody.innerHTML += row;
             });
         }
-
         async function viewOrder(id) {
             const order = await apiRequest(`/admin/orders/${id}`);
-            if (order) {
-                alert(`Pedido #${id}\nDetalhes: ${JSON.stringify(order, null, 2)}`);
-            }
+            if (order) alert(`Pedido #${id}\nDetalhes: ${JSON.stringify(order, null, 2)}`);
         }
-
         async function editOrder(id) {
             const order = await apiRequest(`/admin/orders/${id}`);
             if (order) {
                 currentEditItem = order;
                 currentEditType = 'order';
-
                 document.getElementById('modalTitle').textContent = `Editar Pedido #${id}`;
                 document.getElementById('modalBody').innerHTML = `
-                    <div class="form-group">
-                        <label>Status</label>
-                        <select id="editOrderStatus">
+                    <div>
+                        <label class="block mb-1 font-bold text-yellow-300">Status</label>
+                        <select id="editOrderStatus" class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400">
                             <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pendente</option>
                             <option value="preparing" ${order.status === 'preparing' ? 'selected' : ''}>Preparando</option>
                             <option value="ready" ${order.status === 'ready' ? 'selected' : ''}>Pronto</option>
@@ -664,11 +441,9 @@
                         </select>
                     </div>
                 `;
-
-                document.getElementById('editModal').classList.add('show');
+                document.getElementById('editModal').classList.remove('hidden');
             }
         }
-
         async function deleteOrder(id) {
             if (confirm('Tem certeza que deseja excluir este pedido?')) {
                 const result = await apiRequest(`/admin/orders/${id}`, { method: 'DELETE' });
@@ -678,94 +453,73 @@
                 }
             }
         }
-
-        // === SABORES ===
+        // Sabores
         async function loadFlavors() {
             const flavors = await apiRequest('/admin/flavors');
-            if (flavors) {
-                displayFlavors(flavors);
-            }
+            if (flavors) displayFlavors(flavors);
         }
-
         function displayFlavors(flavors) {
-            const tbody = document.querySelector('#flavorsTable tbody');
+            const tbody = document.getElementById('flavorsTable');
             tbody.innerHTML = '';
-
             flavors.forEach(flavor => {
-                const row = `
-                    <tr>
-                        <td>${flavor.id}</td>
-                        <td>${flavor.name}</td>
-                        <td>${flavor.description || 'N/A'}</td>
-                        <td>${flavor.type === 'DOCE' ? 'Doce' : 'Salgada'}</td>
-                        <td>
-                            <button class="btn btn-secondary" onclick="editFlavor(${flavor.id})">Editar</button>
-                            <button class="btn btn-danger" onclick="deleteFlavor(${flavor.id})">Excluir</button>
+                tbody.innerHTML += `
+                    <tr class="border-b border-neutral-800">
+                        <td class="p-3">${flavor.id}</td>
+                        <td class="p-3">${flavor.name}</td>
+                        <td class="p-3">${flavor.description || 'N/A'}</td>
+                        <td class="p-3">${flavor.type === 'DOCE' ? 'Doce' : 'Salgada'}</td>
+                        <td class="p-3 flex gap-1">
+                            <button class="bg-blue-600 text-white px-2 py-1 rounded font-bold hover:bg-blue-500" onclick="editFlavor(${flavor.id})">Editar</button>
+                            <button class="bg-red-600 text-white px-2 py-1 rounded font-bold hover:bg-red-500" onclick="deleteFlavor(${flavor.id})">Excluir</button>
                         </td>
                     </tr>
                 `;
-                tbody.innerHTML += row;
             });
         }
-
         async function saveFlavor() {
             const name = document.getElementById('flavorName').value;
             const description = document.getElementById('flavorDescription').value;
             const type = document.getElementById('flavorType').value;
-
-            if (!name || !type) {
-                showMessage('Nome e sabor são obrigatórios!', 'error');
-                return;
-            }
-
+            if (!name || !type) return showMessage('Nome e sabor são obrigatórios!', 'error');
             const data = { name, description, type };
-            const result = await apiRequest('/admin/flavors', {
-                method: 'POST',
-                body: JSON.stringify(data)
-            });
-
+            const result = await apiRequest('/admin/flavors', { method: 'POST', body: JSON.stringify(data) });
             if (result) {
                 showMessage('Sabor salvo com sucesso!');
                 clearFlavorForm();
                 loadFlavors();
             }
         }
-
         function clearFlavorForm() {
             document.getElementById('flavorName').value = '';
             document.getElementById('flavorDescription').value = '';
             document.getElementById('flavorType').value = '';
         }
-
         async function editFlavor(id) {
             const flavor = await apiRequest(`/admin/flavors/${id}`);
             if (flavor) {
                 currentEditItem = flavor;
                 currentEditType = 'flavor';
-
                 document.getElementById('modalTitle').textContent = `Editar Sabor #${id}`;
                 document.getElementById('modalBody').innerHTML = `
-                    <div class="form-group">
-                        <label for="editFlavorName">Nome do Sabor</label>
-                        <input type="text" id="editFlavorName" value="${flavor.name}" placeholder="Ex: Margherita">
+                    <div>
+                        <label class="block mb-1 font-bold text-yellow-300">Nome do Sabor</label>
+                        <input type="text" id="editFlavorName" value="${flavor.name}" class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400">
                     </div>
-                    <div class="form-group">
-                        <label for="editFlavorDescription">Descrição</label>
-                        <textarea id="editFlavorDescription" placeholder="Descrição dos ingredientes...">${flavor.description || ''}</textarea>
+                    <div>
+                        <label class="block mb-1 font-bold text-yellow-300">Descrição</label>
+                        <textarea id="editFlavorDescription" class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400">${flavor.description || ''}</textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="editFlavorType">Sabor</label>
-                        <select id="editFlavorType">
+                    <div>
+                        <label class="block mb-1 font-bold text-yellow-300">Sabor</label>
+                        <select id="editFlavorType" class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400">
                             <option value="SALGADO" ${flavor.type === 'SALGADO' ? 'selected' : ''}>Salgada</option>
                             <option value="DOCE" ${flavor.type === 'DOCE' ? 'selected' : ''}>Doce</option>
                         </select>
                     </div>
                 `;
-
-                document.getElementById('editModal').classList.add('show');
+                document.getElementById('editModal').classList.remove('hidden');
             }
         }
-
         async function deleteFlavor(id) {
             if (confirm('Tem certeza que deseja excluir este sabor?')) {
                 const result = await apiRequest(`/admin/flavors/${id}`, { method: 'DELETE' });
@@ -775,64 +529,47 @@
                 }
             }
         }
-
-        // === TAMANHOS ===
+        // Tamanhos
         async function loadSizes() {
             const sizes = await apiRequest('/admin/sizes');
-            if (sizes) {
-                displaySizes(sizes);
-            }
+            if (sizes) displaySizes(sizes);
         }
-
         function displaySizes(sizes) {
-            const tbody = document.querySelector('#sizesTable tbody');
+            const tbody = document.getElementById('sizesTable');
             tbody.innerHTML = '';
-
             sizes.forEach(size => {
-                const row = `
-                    <tr>
-                        <td>${size.id}</td>
-                        <td>${size.name}</td>
-                        <td>${size.description || 'N/A'}</td>
-                        <td>${size.pieces || 'N/A'}</td>
-                        <td>R$ ${size.price ? (size.price / 100).toFixed(2).replace('.', ',') : '0,00'}</td>
-                        <td>${size.flavorsQuantity ?? size.flavors_quantity ?? 'N/A'}</td>
-                        <td>
-                            <button class="btn btn-secondary" onclick="editSize(${size.id})">Editar</button>
-                            <button class="btn btn-danger" onclick="deleteSize(${size.id})">Excluir</button>
+                tbody.innerHTML += `
+                    <tr class="border-b border-neutral-800">
+                        <td class="p-3">${size.id}</td>
+                        <td class="p-3">${size.name}</td>
+                        <td class="p-3">${size.description || 'N/A'}</td>
+                        <td class="p-3">${size.pieces || 'N/A'}</td>
+                        <td class="p-3">R$ ${size.price ? (size.price).toFixed(2).replace('.', ',') : '0,00'}</td>
+                        <td class="p-3">${size.flavorsQuantity ?? size.flavors_quantity ?? 'N/A'}</td>
+                        <td class="p-3 flex gap-1">
+                            <button class="bg-blue-600 text-white px-2 py-1 rounded font-bold hover:bg-blue-500" onclick="editSize(${size.id})">Editar</button>
+                            <button class="bg-red-600 text-white px-2 py-1 rounded font-bold hover:bg-red-500" onclick="deleteSize(${size.id})">Excluir</button>
                         </td>
                     </tr>
                 `;
-                tbody.innerHTML += row;
             });
         }
-
         async function saveSize() {
             const name = document.getElementById('sizeName').value;
             const description = document.getElementById('sizeDescription').value;
             const pieces = parseInt(document.getElementById('sizePieces').value);
             const priceValue = document.getElementById('sizePrice').value.replace(',', '.');
-            const price = Math.round(parseFloat(priceValue) * 100);
+            const price = Math.round(parseFloat(priceValue));
             const flavorsQuantity = parseInt(document.getElementById('sizeFlavorsQuantity').value);
-
-            if (!name || !pieces || !price || !flavorsQuantity) {
-                showMessage('Todos os campos são obrigatórios!', 'error');
-                return;
-            }
-
+            if (!name || !pieces || !price || !flavorsQuantity) return showMessage('Todos os campos são obrigatórios!', 'error');
             const data = { name, description, pieces, price, flavorsQuantity };
-            const result = await apiRequest('/admin/sizes', {
-                method: 'POST',
-                body: JSON.stringify(data)
-            });
-
+            const result = await apiRequest('/admin/sizes', { method: 'POST', body: JSON.stringify(data) });
             if (result) {
                 showMessage('Tamanho salvo com sucesso!');
                 clearSizeForm();
                 loadSizes();
             }
         }
-
         function clearSizeForm() {
             document.getElementById('sizeName').value = '';
             document.getElementById('sizeDescription').value = '';
@@ -840,41 +577,37 @@
             document.getElementById('sizePrice').value = '';
             document.getElementById('sizeFlavorsQuantity').value = '';
         }
-
         async function editSize(id) {
             const size = await apiRequest(`/admin/sizes/${id}`);
             if (size) {
                 currentEditItem = size;
                 currentEditType = 'size';
-
                 document.getElementById('modalTitle').textContent = `Editar Tamanho #${id}`;
                 document.getElementById('modalBody').innerHTML = `
-                    <div class="form-group">
-                        <label for="editSizeName">Nome do Tamanho</label>
-                        <input type="text" id="editSizeName" value="${size.name}" placeholder="Ex: Grande">
+                    <div>
+                        <label class="block mb-1 font-bold text-yellow-300">Nome do Tamanho</label>
+                        <input type="text" id="editSizeName" value="${size.name}" class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400">
                     </div>
-                    <div class="form-group">
-                        <label for="editSizeDescription">Descrição</label>
-                        <input type="text" id="editSizeDescription" value="${size.description || ''}" placeholder="Ex: 35cm">
+                    <div>
+                        <label class="block mb-1 font-bold text-yellow-300">Descrição</label>
+                        <input type="text" id="editSizeDescription" value="${size.description || ''}" class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400">
                     </div>
-                    <div class="form-group">
-                        <label for="editSizePieces">Quantidade de Pedaços</label>
-                        <input type="number" id="editSizePieces" value="${size.pieces || ''}" placeholder="Ex: 8">
+                    <div>
+                        <label class="block mb-1 font-bold text-yellow-300">Quantidade de Pedaços</label>
+                        <input type="number" id="editSizePieces" value="${size.pieces || ''}" class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400">
                     </div>
-                    <div class="form-group">
-                        <label for="editSizePrice">Preço Base</label>
-                        <input type="number" id="editSizePrice" step="0.01" value="${size.price ? (size.price / 100).toFixed(2).replace('.', ',') : ''}" placeholder="Ex: 25,90">
+                    <div>
+                        <label class="block mb-1 font-bold text-yellow-300">Preço Base</label>
+                        <input type="number" id="editSizePrice" step="0.01" value="${size.price ? (size.price).toFixed(2).replace('.', ',') : ''}" class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400">
                     </div>
-                    <div class="form-group">
-                        <label for="editSizeFlavorsQuantity">Sabores Máximos</label>
-                        <input type="number" id="editSizeFlavorsQuantity" value="${size.flavorsQuantity || ''}" placeholder="Ex: 3">
+                    <div>
+                        <label class="block mb-1 font-bold text-yellow-300">Sabores Máximos</label>
+                        <input type="number" id="editSizeFlavorsQuantity" value="${size.flavorsQuantity || ''}" class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400">
                     </div>
                 `;
-
-                document.getElementById('editModal').classList.add('show');
+                document.getElementById('editModal').classList.remove('hidden');
             }
         }
-
         async function deleteSize(id) {
             if (confirm('Tem certeza que deseja excluir este tamanho?')) {
                 const result = await apiRequest(`/admin/sizes/${id}`, { method: 'DELETE' });
@@ -885,83 +618,63 @@
             }
         }
 
-        // === BORDAS ===
+        // Bordas
         async function loadBorders() {
             const borders = await apiRequest('/admin/borders');
-            if (borders) {
-                displayBorders(borders);
-            }
+            if (borders) displayBorders(borders);
         }
-
         function displayBorders(borders) {
-            const tbody = document.querySelector('#bordersTable tbody');
+            const tbody = document.getElementById('bordersTable');
             tbody.innerHTML = '';
-
             borders.forEach(border => {
-                const row = `
-                    <tr>
-                        <td>${border.id}</td>
-                        <td>${border.name}</td>
-                        <td>R$ ${border.price ? border.price.toFixed(2) : '0.00'}</td>
-                        <td>
-                            <button class="btn btn-secondary" onclick="editBorder(${border.id})">Editar</button>
-                            <button class="btn btn-danger" onclick="deleteBorder(${border.id})">Excluir</button>
+                tbody.innerHTML += `
+                    <tr class="border-b border-neutral-800">
+                        <td class="p-3">${border.id}</td>
+                        <td class="p-3">${border.name}</td>
+                        <td class="p-3">R$ ${border.price ? border.price.toFixed(2) : '0.00'}</td>
+                        <td class="p-3 flex gap-1">
+                            <button class="bg-blue-600 text-white px-2 py-1 rounded font-bold hover:bg-blue-500" onclick="editBorder(${border.id})">Editar</button>
+                            <button class="bg-red-600 text-white px-2 py-1 rounded font-bold hover:bg-red-500" onclick="deleteBorder(${border.id})">Excluir</button>
                         </td>
                     </tr>
                 `;
-                tbody.innerHTML += row;
             });
         }
-
         async function saveBorder() {
             const name = document.getElementById('borderName').value;
             const price = parseFloat(document.getElementById('borderPrice').value);
-
-            if (!name || !price) {
-                showMessage('Nome e preço são obrigatórios!', 'error');
-                return;
-            }
-
+            if (!name || !price) return showMessage('Nome e preço são obrigatórios!', 'error');
             const data = { name, price };
-            const result = await apiRequest('/admin/borders', {
-                method: 'POST',
-                body: JSON.stringify(data)
-            });
-
+            const result = await apiRequest('/admin/borders', { method: 'POST', body: JSON.stringify(data) });
             if (result) {
                 showMessage('Borda salva com sucesso!');
                 clearBorderForm();
                 loadBorders();
             }
         }
-
         function clearBorderForm() {
             document.getElementById('borderName').value = '';
             document.getElementById('borderPrice').value = '';
         }
-
         async function editBorder(id) {
             const border = await apiRequest(`/admin/borders/${id}`);
             if (border) {
                 currentEditItem = border;
                 currentEditType = 'border';
-
                 document.getElementById('modalTitle').textContent = `Editar Borda #${id}`;
                 document.getElementById('modalBody').innerHTML = `
-                    <div class="form-group">
-                        <label for="editBorderName">Nome da Borda</label>
-                        <input type="text" id="editBorderName" value="${border.name}" placeholder="Borda de chocolate">
+                    <div>
+                        <label class="block mb-1 font-bold text-yellow-300">Nome da Borda</label>
+                        <input type="text" id="editBorderName" value="${border.name}" class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400">
                     </div>
-                    <div class="form-group">
-                        <label for="editBorderPrice">Preço Adicional</label>
-                        <input type="number" id="editBorderPrice" step="0.01" value="${border.price || ''}" placeholder="5.00">
+                    <div>
+                        <label class="block mb-1 font-bold text-yellow-300">Preço Adicional</label>
+                        <input type="number" id="editBorderPrice" step="0.01" value="${border.price || ''}" class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400">
                     </div>
                 `;
-
-                document.getElementById('editModal').classList.add('show');
+                document.getElementById('editModal').classList.remove('hidden');
             }
         }
-
         async function deleteBorder(id) {
             if (confirm('Tem certeza que deseja excluir esta borda?')) {
                 const result = await apiRequest(`/admin/borders/${id}`, { method: 'DELETE' });
@@ -971,84 +684,63 @@
                 }
             }
         }
-
-        // === BEBIDAS ===
+        // Bebidas
         async function loadDrinks() {
             const drinks = await apiRequest('/admin/drinks');
-            if (drinks) {
-                displayDrinks(drinks);
-            }
+            if (drinks) displayDrinks(drinks);
         }
-
         function displayDrinks(drinks) {
-            const tbody = document.querySelector('#drinksTable tbody');
+            const tbody = document.getElementById('drinksTable');
             tbody.innerHTML = '';
-
             drinks.forEach(drink => {
-                const row = `
-                    <tr>
-                        <td>${drink.id}</td>
-                        <td>${drink.name}</td>
-                        <td>R$ ${drink.price ? drink.price.toFixed(2) : '0.00'}</td>
-                        <td>
-                            <button class="btn btn-secondary" onclick="editDrink(${drink.id})">Editar</button>
-                            <button class="btn btn-danger" onclick="deleteDrink(${drink.id})">Excluir</button>
+                tbody.innerHTML += `
+                    <tr class="border-b border-neutral-800">
+                        <td class="p-3">${drink.id}</td>
+                        <td class="p-3">${drink.name}</td>
+                        <td class="p-3">R$ ${drink.price ? drink.price.toFixed(2) : '0.00'}</td>
+                        <td class="p-3 flex gap-1">
+                            <button class="bg-blue-600 text-white px-2 py-1 rounded font-bold hover:bg-blue-500" onclick="editDrink(${drink.id})">Editar</button>
+                            <button class="bg-red-600 text-white px-2 py-1 rounded font-bold hover:bg-red-500" onclick="deleteDrink(${drink.id})">Excluir</button>
                         </td>
                     </tr>
                 `;
-                tbody.innerHTML += row;
             });
         }
-
         async function saveDrink() {
             const name = document.getElementById('drinkName').value;
             const price = parseFloat(document.getElementById('drinkPrice').value);
-
-            if (!name || !price) {
-                showMessage('Nome e preço são obrigatórios!', 'error');
-                return;
-            }
-
+            if (!name || !price) return showMessage('Nome e preço são obrigatórios!', 'error');
             const data = { name, price };
-            const result = await apiRequest('/admin/drinks', {
-                method: 'POST',
-                body: JSON.stringify(data)
-            });
-
+            const result = await apiRequest('/admin/drinks', { method: 'POST', body: JSON.stringify(data) });
             if (result) {
                 showMessage('Bebida salva com sucesso!');
                 clearDrinkForm();
                 loadDrinks();
             }
         }
-
         function clearDrinkForm() {
             document.getElementById('drinkName').value = '';
             document.getElementById('drinkPrice').value = '';
         }
-
         async function editDrink(id) {
             const drink = await apiRequest(`/admin/drinks/${id}`);
             if (drink) {
                 currentEditItem = drink;
                 currentEditType = 'drink';
-
                 document.getElementById('modalTitle').textContent = `Editar Bebida #${id}`;
                 document.getElementById('modalBody').innerHTML = `
-                    <div class="form-group">
-                        <label for="editDrinkName">Nome da Bebida</label>
-                        <input type="text" id="editDrinkName" value="${drink.name}" placeholder="Ex: Coca-Cola 350ml">
+                    <div>
+                        <label class="block mb-1 font-bold text-yellow-300">Nome da Bebida</label>
+                        <input type="text" id="editDrinkName" value="${drink.name}" class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400">
                     </div>
-                    <div class="form-group">
-                        <label for="editDrinkPrice">Preço</label>
-                        <input type="number" id="editDrinkPrice" step="0.01" value="${drink.price || ''}" placeholder="Ex: 4.50">
+                    <div>
+                        <label class="block mb-1 font-bold text-yellow-300">Preço</label>
+                        <input type="number" id="editDrinkPrice" step="0.01" value="${drink.price || ''}" class="w-full bg-neutral-800 rounded px-3 py-2 text-white focus:ring-2 focus:ring-yellow-400">
                     </div>
                 `;
-
-                document.getElementById('editModal').classList.add('show');
+                document.getElementById('editModal').classList.remove('hidden');
             }
         }
-
         async function deleteDrink(id) {
             if (confirm('Tem certeza que deseja excluir esta bebida?')) {
                 const result = await apiRequest(`/admin/drinks/${id}`, { method: 'DELETE' });
@@ -1058,23 +750,19 @@
                 }
             }
         }
-
-        // === MODAL ===
+        // Modal
         function closeModal() {
-            document.getElementById('editModal').classList.remove('show');
+            document.getElementById('editModal').classList.add('hidden');
             currentEditItem = null;
             currentEditType = null;
         }
-
         async function saveModalData() {
             if (currentEditType === 'order' && currentEditItem) {
                 const status = document.getElementById('editOrderStatus').value;
-
                 const result = await apiRequest(`/admin/orders/${currentEditItem.id}`, {
                     method: 'PUT',
                     body: JSON.stringify({ status })
                 });
-
                 if (result) {
                     showMessage('Pedido atualizado com sucesso!');
                     closeModal();
@@ -1084,18 +772,12 @@
                 const name = document.getElementById('editFlavorName').value;
                 const description = document.getElementById('editFlavorDescription').value;
                 const type = document.getElementById('editFlavorType').value;
-
-                if (!name || !type) {
-                    showMessage('Nome e sabor são obrigatórios!', 'error');
-                    return;
-                }
-
+                if (!name || !type) return showMessage('Nome e sabor são obrigatórios!', 'error');
                 const data = { name, description, type };
                 const result = await apiRequest(`/admin/flavors/${currentEditItem.id}`, {
                     method: 'PUT',
                     body: JSON.stringify(data)
                 });
-
                 if (result) {
                     showMessage('Sabor atualizado com sucesso!');
                     closeModal();
@@ -1106,20 +788,14 @@
                 const description = document.getElementById('editSizeDescription').value;
                 const pieces = parseInt(document.getElementById('editSizePieces').value);
                 const priceValue = document.getElementById('editSizePrice').value.replace(',', '.');
-                const price = Math.round(parseFloat(priceValue) * 100);
+                const price = Math.round(parseFloat(priceValue));
                 const flavorsQuantity = parseInt(document.getElementById('editSizeFlavorsQuantity').value);
-
-                if (!name || !pieces || !price || !flavorsQuantity) {
-                    showMessage('Todos os campos são obrigatórios!', 'error');
-                    return;
-                }
-
+                if (!name || !pieces || !price || !flavorsQuantity) return showMessage('Todos os campos são obrigatórios!', 'error');
                 const data = { name, description, pieces, price, flavorsQuantity };
                 const result = await apiRequest(`/admin/sizes/${currentEditItem.id}`, {
                     method: 'PUT',
                     body: JSON.stringify(data)
                 });
-
                 if (result) {
                     showMessage('Tamanho atualizado com sucesso!');
                     closeModal();
@@ -1128,18 +804,12 @@
             } else if (currentEditType === 'border' && currentEditItem) {
                 const name = document.getElementById('editBorderName').value;
                 const price = parseFloat(document.getElementById('editBorderPrice').value);
-
-                if (!name || !price) {
-                    showMessage('Nome e preço são obrigatórios!', 'error');
-                    return;
-                }
-
+                if (!name || !price) return showMessage('Nome e preço são obrigatórios!', 'error');
                 const data = { name, price };
                 const result = await apiRequest(`/admin/borders/${currentEditItem.id}`, {
                     method: 'PUT',
                     body: JSON.stringify(data)
                 });
-
                 if (result) {
                     showMessage('Borda atualizada com sucesso!');
                     closeModal();
@@ -1148,18 +818,12 @@
             } else if (currentEditType === 'drink' && currentEditItem) {
                 const name = document.getElementById('editDrinkName').value;
                 const price = parseFloat(document.getElementById('editDrinkPrice').value);
-
-                if (!name || !price) {
-                    showMessage('Nome e preço são obrigatórios!', 'error');
-                    return;
-                }
-
+                if (!name || !price) return showMessage('Nome e preço são obrigatórios!', 'error');
                 const data = { name, price };
                 const result = await apiRequest(`/admin/drinks/${currentEditItem.id}`, {
                     method: 'PUT',
                     body: JSON.stringify(data)
                 });
-
                 if (result) {
                     showMessage('Bebida atualizada com sucesso!');
                     closeModal();
@@ -1167,12 +831,8 @@
                 }
             }
         }
-
-        // Fechar modal ao clicar fora
         document.getElementById('editModal').addEventListener('click', function (e) {
-            if (e.target === this) {
-                closeModal();
-            }
+            if (e.target === this) closeModal();
         });
     </script>
 </body>

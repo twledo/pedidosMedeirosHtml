@@ -10,10 +10,13 @@
 </head>
 
 <body class="bg-neutral-950 min-h-screen flex flex-col items-center justify-center text-white">
+    <!-- Resumo do Pedido -->
+    <div id="pizzaResumo" class="w-full max-w-md mx-auto mt-4 mb-2 px-2">
+    </div>
     <div class="w-full max-w-md mx-auto mt-8 mb-28 px-2">
         <div id="stepContainer" class="bg-neutral-900 rounded-2xl shadow-xl p-6 flex flex-col items-center">
             <h1 id="stepTitle" class="text-2xl md:text-3xl font-bold text-yellow-400 mb-6 text-center drop-shadow">
-                Escolha os sabores da pizza
+                <!-- O texto será preenchido pelo JS -->
             </h1>
             <div class="w-full mb-4">
                 <input type="text" id="searchInput"
@@ -23,14 +26,20 @@
             <div id="stepOptions" class="w-full flex flex-col gap-4"></div>
             <div id="msg" class="w-full text-center text-yellow-400 font-semibold mt-4"></div>
         </div>
+        <div class="bg-neutral-800/80 rounded-xl shadow p-4 flex flex-col gap-2 mt-6">
+            <h2 class="text-lg font-bold text-yellow-400 mb-1 flex items-center gap-2">
+                <span>🍕</span> Seu Pedido
+            </h2>
+            <div id="pizzaResumoConteudo" class="text-sm text-neutral-200">
+                <div><b>Tamanho:</b> <span id="resumoTamanho" class="text-yellow-300 capitalize">Nenhum</span></div>
+                <div><b>Sabores:</b> <span id="resumoSabores" class="text-yellow-300 capitalize">Nenhum</span></div>
+            </div>
+            <button id="avancarBtn"
+                class="mt-4 bg-yellow-500 text-neutral-900 font-bold py-2 px-4 rounded-lg shadow-md hover:bg-yellow-400 transition-colors">
+                Avançar
+            </button>
+        </div>
     </div>
-        <button id="avancarBtn" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md
-        bg-yellow-500 text-neutral-900 font-bold py-4 rounded-t-2xl text-xl shadow-xl
-        transition-colors z-50
-        hover:bg-yellow-500 hover:text-neutral-900
-        disabled:bg-neutral-700 disabled:text-neutral-400" disabled>
-        Avançar
-    </button>
     <script>
         let sabores = [];
         let saboresSelecionados = [];
@@ -44,6 +53,29 @@
         } catch { pedidoPizza = {}; }
         if (pedidoPizza.tamanho) {
             maxSabores = pedidoPizza.tamanho.flavorsQuantity ?? pedidoPizza.tamanho.flavors_quantity ?? 1;
+        }
+
+        function capitalize(str) {
+            if (!str) return '';
+            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+        }
+
+        function atualizarResumo() {
+            // Tamanho
+            const resumoTamanho = document.getElementById('resumoTamanho');
+            resumoTamanho.textContent = pedidoPizza.tamanho ? capitalize(pedidoPizza.tamanho.name) : 'Nenhum';
+
+            // Sabores
+            const resumoSabores = document.getElementById('resumoSabores');
+            if (saboresSelecionados.length === 0) {
+                resumoSabores.textContent = 'Nenhum';
+            } else {
+                const nomes = sabores
+                    .filter(sab => saboresSelecionados.includes(sab.id))
+                    .map(sab => capitalize(sab.name))
+                    .join(', ');
+                resumoSabores.textContent = nomes;
+            }
         }
 
         async function fetchSabores() {
@@ -101,8 +133,8 @@
                             : 'border-neutral-700 bg-neutral-900 text-white hover:border-yellow-400 hover:bg-neutral-800'}
                         disabled:bg-neutral-700 disabled:text-neutral-400 disabled:cursor-not-allowed`;
                     btn.innerHTML = `
-                        <span class="font-bold">${s.name}</span>
-                        <span class="text-sm ${selecionado ? 'text-neutral-900' : 'text-neutral-300'}">${s.description ? s.description : ''}</span>
+                        <span class="font-bold">${capitalize(s.name)}</span>
+                        <span class="text-sm ${selecionado ? 'text-neutral-900' : 'text-neutral-300'}">${s.description ? capitalize(s.description) : ''}</span>
                     `;
                     const desabilitado = !selecionado && maxAtingido;
                     btn.disabled = desabilitado;
@@ -139,8 +171,8 @@
                             : 'border-neutral-700 bg-neutral-900 text-white hover:border-yellow-400 hover:bg-neutral-800'}
                         disabled:bg-neutral-700 disabled:text-neutral-400 disabled:cursor-not-allowed`;
                     btn.innerHTML = `
-                        <span class="font-bold">${s.name}</span>
-                        <span class="text-sm ${selecionado ? 'text-neutral-900' : 'text-neutral-300'}">${s.description ? s.description : ''}</span>
+                        <span class="font-bold">${capitalize(s.name)}</span>
+                        <span class="text-sm ${selecionado ? 'text-neutral-900' : 'text-neutral-300'}">${s.description ? capitalize(s.description) : ''}</span>
                     `;
                     const desabilitado = !selecionado && maxAtingido;
                     btn.disabled = desabilitado;
@@ -158,9 +190,10 @@
             }
 
             // Mensagem de instrução
-            msg.textContent = `Escolha até ${maxSabores} sabor(es). Selecionados: ${saboresSelecionados.length}`;
-
             avancarBtn.disabled = saboresSelecionados.length < 1;
+
+            // Atualiza o resumo visual
+            atualizarResumo();
         }
 
         document.getElementById('avancarBtn').onclick = () => {
@@ -175,6 +208,9 @@
             termoBusca = this.value;
             renderSabores();
         });
+
+        const stepTitle = document.getElementById('stepTitle');
+        stepTitle.textContent = `Escolha até ${maxSabores} sabor(es)`;
 
         fetchSabores();
     </script>
